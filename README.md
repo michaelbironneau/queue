@@ -1,4 +1,4 @@
-# Cloud Queue wrapper
+# Worker Queues
 
 [Godoc](https://godoc.org/github.com/michaelbironneau/queue)
 
