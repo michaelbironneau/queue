@@ -1,5 +1,7 @@
 # Cloud Queue wrapper
 
+[Godoc](https://godoc.org/github.com/michaelbironneau/queue)
+
 This implements a Queue interface backed by queue services like Azure Service Bus queues or Amazon SQS. It looks like this:
 
 ```go
