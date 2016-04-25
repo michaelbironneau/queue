@@ -3,9 +3,9 @@ package queue
 
 //Item is a generic item in a queue.
 type Item struct {
-	ID        string //Unique item ID, usually assigned by the queuing service.
+	ID        string //Unique item ID, assigned by the queuing service.
 	LockToken string //Lock token held by the worker while it processing the message, assigned by the queueing service (called Receipt Handle in AWS).
-	Request   []byte //Request payload, decoded from JSON.
+	Request   []byte //Request payload.
 }
 
 //Queue is a request queue for worker processes. A worker gets the Next() item in the queue, does some work based on that item, and either calls
