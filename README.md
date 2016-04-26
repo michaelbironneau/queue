@@ -7,11 +7,14 @@ This implements a Queue interface for worker processes backed by a queue service
 ```go
 //Queue is a request queue for worker processes. A worker gets the Next() item in the queue, does some work based on that item, and either calls
 //Succeed() or Fail() depending on the outcome. Note that Fail() returns the item to the queue.
+//Send() enqueues a new item.
 type Queue interface {
 	Next() (*Item, error)
+	Send(*Item) error
 	Succeed(*Item) error
 	Fail(*Item) error
 }
+
 
 //Item is a generic item in a queue.
 type Item struct {

@@ -1,6 +1,7 @@
 package queue
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -51,11 +52,48 @@ func (aq *AzureQueue) request(url string, method string) (*http.Request, error) 
 	return req, nil
 }
 
+func (aq *AzureQueue) requestWithBody(url string, method string, body []byte) (*http.Request, error) {
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Authorization", aq.authHeader(url, aq.signatureExpiry(time.Now())))
+	return req, nil
+}
+
 //Succeed confirms that the request has been processed and permanently removes it from the queue.
 //
 //For more information see https://msdn.microsoft.com/en-us/library/azure/hh780768.aspx.
 func (aq *AzureQueue) Succeed(item *Item) error {
 	req, err := aq.request(aq.url+"messages/"+item.ID+"/"+item.LockToken, "DELETE")
+
+	if err != nil {
+		return err
+	}
+
+	resp, err := aq.client.Do(req)
+
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode == http.StatusOK {
+		return nil
+	}
+
+	defer resp.Body.Close()
+
+	b, _ := ioutil.ReadAll(resp.Body)
+
+	return fmt.Errorf("Got error code %v with body %s", resp.StatusCode, string(b))
+}
+
+//Send enqueues a new item.
+//
+//For more information see https://msdn.microsoft.com/en-us/library/azure/hh780737.aspx.
+func (aq *AzureQueue) Send(item *Item) error {
+	req, err := aq.requestWithBody(aq.url+"messages/", "POST", item.Request)
 
 	if err != nil {
 		return err
