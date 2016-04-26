@@ -35,11 +35,8 @@ var testPieces = map[string]sasPiece{
 func TestSAS(t *testing.T) {
 	var tu string
 	for testName, testPieces := range testPieces {
-		aq, err := NewAzureQueue(testPieces.Namespace, testPieces.SAKeyName, testPieces.SAKeyValue, testPieces.QueuePath)
+		aq := NewAzureQueue(testPieces.Namespace, testPieces.SAKeyName, testPieces.SAKeyValue, testPieces.QueuePath)
 		testRequestURI := fmt.Sprintf(azureQueueURL+"messages/head?timeout=60", aq.namespace, testPieces.QueuePath)
-		if err != nil {
-			t.Fatal(testName, err)
-		}
 
 		if tu = aq.signatureURI(testRequestURI); tu != testPieces.URI {
 			t.Errorf("%s expected uri \n %s \n but got \n %s \n", testName, testPieces.URI, tu)

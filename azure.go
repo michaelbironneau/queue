@@ -27,7 +27,7 @@ const azureQueueURL = "https://%s.servicebus.windows.net:443/%s/"
 
 //NewAzureQueue creates a new queue from the given parameters. Their meaning can be found in the MSDN docs at:
 //  https://msdn.microsoft.com/en-us/library/azure/dn798895.aspx
-func NewAzureQueue(namespace string, sharedAccessKeyName string, sharedAccessKeyValue string, queuePath string) (*AzureQueue, error) {
+func NewAzureQueue(namespace string, sharedAccessKeyName string, sharedAccessKeyValue string, queuePath string) *AzureQueue {
 	/*ss, err := base64.StdEncoding.DecodeString(string(sharedAccessKeyValue))
 	if err != nil {
 		panic(err)
@@ -38,7 +38,7 @@ func NewAzureQueue(namespace string, sharedAccessKeyName string, sharedAccessKey
 		saValue:   []byte(sharedAccessKeyValue),
 		url:       fmt.Sprintf(azureQueueURL, namespace, queuePath),
 		client:    &http.Client{},
-	}, nil
+	}
 }
 
 func (aq *AzureQueue) request(url string, method string) (*http.Request, error) {
