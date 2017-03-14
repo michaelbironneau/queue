@@ -105,7 +105,7 @@ func (aq *AzureQueue) Send(item *Item) error {
 		return err
 	}
 
-	if resp.StatusCode == http.StatusOK {
+	if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusCreated {
 		return nil
 	}
 
@@ -164,9 +164,11 @@ func (aq *AzureQueue) Next() (*Item, error) {
 
 	brokerProperties := resp.Header.Get("BrokerProperties")
 
+    fmt.Println(brokerProperties) //ejh debug
+
 	var props map[string]interface{}
 
-	if err := json.Unmarshal([]byte(brokerProperties), props); err != nil {
+	if err := json.Unmarshal([]byte(brokerProperties), &props); err != nil {
 		return nil, fmt.Errorf("Error unmarshalling BrokerProperties: %v", err)
 	}
 	var (
